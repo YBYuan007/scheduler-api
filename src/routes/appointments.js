@@ -26,14 +26,16 @@ module.exports = (db, updateAppointment) => {
     });
   });
 
-  router.put("/appointments/:id", (request, response) => {
+  router.put("/appointments/:id", (request, response) => {    
     if (process.env.TEST_ERROR) {
       setTimeout(() => response.status(500).json({}), 1000);
       return;
     }
-
+    console.log("request body", request.body);
     const { student, interviewer } = request.body.interview;
-
+    // const student = request.body.interview.student; 
+    // const interviewer=request.body.interview.interviewer; 
+    
     db.query(
       `
       INSERT INTO interviews (student, interviewer_id, appointment_id) VALUES ($1::text, $2::integer, $3::integer)
@@ -46,7 +48,7 @@ module.exports = (db, updateAppointment) => {
         setTimeout(() => {
           response.status(204).json({});
           updateAppointment(Number(request.params.id), request.body.interview);
-        }, 1000);
+        }, 3000);
       })
       .catch(error => console.log(error));
   });
@@ -63,7 +65,7 @@ module.exports = (db, updateAppointment) => {
       setTimeout(() => {
         response.status(204).json({});
         updateAppointment(Number(request.params.id), null);
-      }, 1000);
+      }, 3000);
     });
   });
 
